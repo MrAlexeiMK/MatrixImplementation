@@ -560,68 +560,19 @@ public class Matrix implements Serializable {
         return this;
     }
 
+    /**
+     * Convolutional operation on matrix with kernel K
+     * @param K Kernel
+     * @param paddingSizeX Horizontal padding
+     * @param paddingSizeY Vertical padding
+     * @param paddingFill Padding Fill type
+     * @param stridingSizeX Horizontal striding
+     * @param stridingSizeY Vertical striding
+     */
     public Matrix convertByKernel(Matrix K, int paddingSizeX, int paddingSizeY,
                                   PaddingFill paddingFill, int stridingSizeX, int stridingSizeY) {
         return MatrixExtractor.getConvertByKernel(this, K, paddingSizeX, paddingSizeY,
                 paddingFill, stridingSizeX, stridingSizeY);
-    }
-
-    public Matrix convertByMaxPulling(int size) {
-        if(size <= getN() && size <= getM()) {
-            Matrix res = new Matrix(getN()/size, getM()/size);
-            for(int y = 0; y < res.getM(); ++y) {
-                for(int x = 0; x < res.getN(); ++x) {
-                    double val = 0;
-                    for(int x1 = size*x; x1 < size*(x+1); x1++) {
-                        for(int y1 = size*y; y1 < size*(y+1); y1++) {
-                            val = Math.max(val, get(x1, y1));
-                        }
-                    }
-                    res.set(x, y, val);
-                }
-            }
-            assign(res);
-        }
-        return this;
-    }
-
-    public Matrix convertByMinPulling(int size) {
-        if(size <= getN() && size <= getM()) {
-            Matrix res = new Matrix(getN()/size, getM()/size);
-            for(int y = 0; y < res.getM(); ++y) {
-                for(int x = 0; x < res.getN(); ++x) {
-                    double val = Double.MAX_VALUE;
-                    for(int x1 = size*x; x1 < size*(x+1); x1++) {
-                        for(int y1 = size*y; y1 < size*(y+1); y1++) {
-                            val = Math.min(val, get(x1, y1));
-                        }
-                    }
-                    res.set(x, y, val);
-                }
-            }
-            assign(res);
-        }
-        return this;
-    }
-
-    public Matrix convertByAveragePulling(int size) {
-        if(size <= getN() && size <= getM()) {
-            Matrix res = new Matrix(getN()/size, getM()/size);
-            for(int y = 0; y < res.getM(); ++y) {
-                for(int x = 0; x < res.getN(); ++x) {
-                    double val = 0;
-                    for(int x1 = size*x; x1 < size*(x+1); x1++) {
-                        for(int y1 = size*y; y1 < size*(y+1); y1++) {
-                            val += get(x1, y1);
-                        }
-                    }
-                    val /= size*size;
-                    res.set(x, y, val);
-                }
-            }
-            assign(res);
-        }
-        return this;
     }
 
     /**
@@ -713,6 +664,9 @@ public class Matrix implements Serializable {
         return this;
     }
 
+    /**
+     * Multiply two matrices
+     */
     public Matrix multiply(Matrix m) {
         if(N == m.getM()) {
             Matrix res = new Matrix(m.getN(), M);
